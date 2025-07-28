@@ -3,8 +3,11 @@
 // The CSV files were exported from Neo4j using `apoc.export.csv.all`.
 // CALL apoc.export.csv.all("genai-data.csv", {bulkImport: true})
 
+CREATE INDEX import__ID IF NOT EXISTS
+FOR (n:__KGBuilder__) ON (n.`:ID`);
+
 CREATE INDEX __entity__id IF NOT EXISTS
-FOR (n:__KGBuilder) ON (n.id);
+FOR (n:__KGBuilder__) ON (n.id);
 
 CREATE VECTOR INDEX chunkEmbeddings IF NOT EXISTS
 FOR (n:Chunk) ON (n.embedding)
@@ -122,38 +125,38 @@ SET
   n.path = row.path;
 
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graphacademy/workshop-genai/refs/heads/new_workshop/workshop-genai/financial-documents/csv-load/data/genai-data.relationships.FACES_RISK.csv" AS row
-MATCH (a {`:ID`: row.`:START_ID`})
-MATCH (b {`:ID`: row.`:END_ID`})
+MATCH (a:__KGBuilder__ {`:ID`: row.`:START_ID`})
+MATCH (b:__KGBuilder__ {`:ID`: row.`:END_ID`})
 MERGE (a)-[:FACES_RISK]->(b);
 
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graphacademy/workshop-genai/refs/heads/new_workshop/workshop-genai/financial-documents/csv-load/data/genai-data.relationships.FILED.csv" AS row
-MATCH (a {`:ID`: row.`:START_ID`})
-MATCH (b {`:ID`: row.`:END_ID`})
+MATCH (a:Company {`:ID`: row.`:START_ID`})
+MATCH (b:Document {`:ID`: row.`:END_ID`})
 MERGE (a)-[:FILED]->(b);
 
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graphacademy/workshop-genai/refs/heads/new_workshop/workshop-genai/financial-documents/csv-load/data/genai-data.relationships.FROM_CHUNK.csv" AS row
-MATCH (a {`:ID`: row.`:START_ID`})
-MATCH (b {`:ID`: row.`:END_ID`})
+MATCH (a:__KGBuilder__ {`:ID`: row.`:START_ID`})
+MATCH (b:Chunk {`:ID`: row.`:END_ID`})
 MERGE (a)-[:FROM_CHUNK]->(b);
 
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graphacademy/workshop-genai/refs/heads/new_workshop/workshop-genai/financial-documents/csv-load/data/genai-data.relationships.FROM_DOCUMENT.csv" AS row
-MATCH (a {`:ID`: row.`:START_ID`})
-MATCH (b {`:ID`: row.`:END_ID`})
+MATCH (a:__KGBuilder__ {`:ID`: row.`:START_ID`})
+MATCH (b:__KGBuilder__ {`:ID`: row.`:END_ID`})
 MERGE (a)-[:FROM_DOCUMENT]->(b);
 
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graphacademy/workshop-genai/refs/heads/new_workshop/workshop-genai/financial-documents/csv-load/data/genai-data.relationships.HAS_METRIC.csv" AS row
-MATCH (a {`:ID`: row.`:START_ID`})
-MATCH (b {`:ID`: row.`:END_ID`})
+MATCH (a:__KGBuilder__ {`:ID`: row.`:START_ID`})
+MATCH (b:__KGBuilder__ {`:ID`: row.`:END_ID`})
 MERGE (a)-[:HAS_METRIC]->(b);
 
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graphacademy/workshop-genai/refs/heads/new_workshop/workshop-genai/financial-documents/csv-load/data/genai-data.relationships.ISSUED_STOCK.csv" AS row
-MATCH (a {`:ID`: row.`:START_ID`})
-MATCH (b {`:ID`: row.`:END_ID`})
+MATCH (a:__KGBuilder__ {`:ID`: row.`:START_ID`})
+MATCH (b:__KGBuilder__ {`:ID`: row.`:END_ID`})
 MERGE (a)-[:ISSUED_STOCK]->(b);
 
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graphacademy/workshop-genai/refs/heads/new_workshop/workshop-genai/financial-documents/csv-load/data/genai-data.relationships.MENTIONS.csv" AS row
-MATCH (a {`:ID`: row.`:START_ID`})
-MATCH (b {`:ID`: row.`:END_ID`})
+MATCH (a:__KGBuilder__ {`:ID`: row.`:START_ID`})
+MATCH (b:__KGBuilder__ {`:ID`: row.`:END_ID`})
 MERGE (a)-[:MENTIONS]->(b);
 
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graphacademy/workshop-genai/refs/heads/new_workshop/workshop-genai/financial-documents/csv-load/data/genai-data.relationships.NEXT_CHUNK.csv" AS row
@@ -162,8 +165,8 @@ MATCH (b:Chunk {`:ID`: row.`:END_ID`})
 MERGE (a)-[:NEXT_CHUNK]->(b);
 
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graphacademy/workshop-genai/refs/heads/new_workshop/workshop-genai/financial-documents/csv-load/data/genai-data.relationships.OWNS.csv" AS row
-MATCH (a {`:ID`: row.`:START_ID`})
-MATCH (b {`:ID`: row.`:END_ID`})
+MATCH (a:AssetManager {`:ID`: row.`:START_ID`})
+MATCH (b:Company {`:ID`: row.`:END_ID`})
 MERGE (a)-[r:OWNS]->(b)
 SET r.position_status = row.position_status,
     r.`Value` = toFloat(row.Value),
