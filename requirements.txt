@@ -1,0 +1,5 @@
+python-dotenv
+neo4j
+neo4j-graphrag[openai]
+jupyter
+pandas

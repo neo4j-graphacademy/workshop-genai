@@ -1,0 +1,22 @@
+= Financial Documents Dataset
+
+This folder contains the data and scripts to create the financial documents dataset used in the workshop.
+
+== csv-load
+
+This folder contains the scripts to load the financial documents dataset into a Neo4j database.
+
+When you enrol on the workshop in GraphAcademy this data is automatically imported into the Neo4j instance.
+
+This process loads the financial documents dataset into a Neo4j database from CSV files. 
+The dataset was originally created by using an LLM to extract financial documents from the SEC EDGAR database.
+
+The original data and code that created this data is in the `pdf-build` folder.
+
+== pdf-build
+
+This folder contains the code and PDF documents that were used to create the financial documents dataset.
+
+You do NOT need to run this code to complete the workshop, the dataset is loaded automatically when you enrol in the workshop. 
+
+This code is provided for reference and to show how you you can create a dataset from unstructured data.
