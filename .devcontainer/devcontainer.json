@@ -13,6 +13,7 @@
 		"vscode": {
 			"settings": {
 				"python.createEnvironment.trigger": "off",
+				"python.defaultInterpreterPath": "/usr/local/bin/python",
 				"workbench.editorAssociations": {
 					"*.md": "vscode.markdown.preview.editor"
 				}
@@ -20,7 +21,9 @@
 			"extensions": [
 				"ms-python.python",
 				"ms-python.debugpy",
-				"neo4j-extensions.neo4j-for-vscode"
+				"neo4j-extensions.neo4j-for-vscode",
+				"ms-toolsai.jupyter",
+				"ms-toolsai.jupyter-keymap"
 				]
 		}
 	}

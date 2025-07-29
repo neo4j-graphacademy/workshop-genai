@@ -59,7 +59,7 @@ SET
   n:__Entity__;
 
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graphacademy/workshop-genai/refs/heads/new_workshop/workshop-genai/financial-documents/csv-load/data/genai-data.nodes.__KGBuilder__.__Entity__.StockType.csv" AS row
-MERGE (n:TimePeriod {`:ID`: row.`:ID`})
+MERGE (n:StockType {`:ID`: row.`:ID`})
 SET 
   n.chunk_index = toInteger(row.chunk_index),
   n.name = row.name,
@@ -108,7 +108,7 @@ SET
   n:__KGBuilder__;
 
 LOAD CSV WITH HEADERS FROM "https://raw.githubusercontent.com/neo4j-graphacademy/workshop-genai/refs/heads/new_workshop/workshop-genai/financial-documents/csv-load/data/genai-data.nodes.AssetManager.csv" AS row
-MERGE (n:Document {`:ID`: row.`:ID`})
+MERGE (n:AssetManager {`:ID`: row.`:ID`})
 SET 
   n.managerName = row.managerName,
   n.managerCik = toInteger(row.managerCik);
