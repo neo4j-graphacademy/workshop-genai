@@ -4,13 +4,18 @@ load_dotenv()
 
 from langchain.chat_models import init_chat_model
 from langgraph.prebuilt import create_react_agent
-from langchain_core.prompts import PromptTemplate
 from langchain_core.tools import tool
+from langchain_neo4j import Neo4jGraph, Neo4jVector
 from langchain_openai import OpenAIEmbeddings
-from langchain_neo4j import Neo4jGraph, Neo4jVector, GraphCypherQAChain
+# 01 Import necessary modules for Text to Cypher
+from langchain_core.prompts import PromptTemplate
+from langchain_neo4j import GraphCypherQAChain
 
 # Initialize the LLM
 model = init_chat_model("gpt-4o", model_provider="openai")
+
+# Create the embedding model
+embedding_model = OpenAIEmbeddings(model="text-embedding-ada-002")
 
 # Connect to Neo4j
 graph = Neo4jGraph(
@@ -18,9 +23,6 @@ graph = Neo4jGraph(
     username=os.getenv("NEO4J_USERNAME"), 
     password=os.getenv("NEO4J_PASSWORD"),
 )
-
-# Create the embedding model
-embedding_model = OpenAIEmbeddings(model="text-embedding-ada-002")
 
 # Define the retrieval query
 retrieval_query = """
@@ -30,7 +32,7 @@ RETURN
     score,
     {
         company: company.name,
-        risks: [ (company:Company)-[:FACES_RISK]-(risk:RiskFactor) | risk.name ]
+        risks: [ (company:Company)-[:FACES_RISK]->(risk:RiskFactor) | risk.name ]
     } AS metadata
 ORDER BY score DESC
 """
@@ -45,26 +47,14 @@ chunk_vector = Neo4jVector.from_existing_index(
     retrieval_query=retrieval_query,
 )
 
-# Define functions for each tool in the agent
-
-# Retrieve context
-@tool("Retrieve-financial-documents")
-def retrieve_docs(query: str):
-    """Find details about companies in their financial documents."""
-    # Use the vector to find relevant documents
-    context = chunk_vector.similarity_search(
-        query, 
-        k=3,
-    )
-    return context
-
+# 02 Create a separate model for Cypher generation
 cypher_model = init_chat_model(
     "gpt-4o", 
     model_provider="openai",
     temperature=0.0
 )
 
-# Create a cypher generation prompt
+# 03 Create a cypher generation prompt
 cypher_template = """Task:Generate Cypher statement to query a graph database.
 Instructions:
 Use only the provided relationship types and properties in the schema.
@@ -87,8 +77,7 @@ cypher_prompt = PromptTemplate(
     template=cypher_template
 )
 
-# tag::cypher_qa[]
-# Create the Cypher QA chain
+# 04 Create the Cypher QA chain
 cypher_qa = GraphCypherQAChain.from_llm(
     graph=graph, 
     llm=model,
@@ -98,9 +87,26 @@ cypher_qa = GraphCypherQAChain.from_llm(
     return_direct=True,
     verbose=True
 )
-# end::cypher_qa[]
 
-# Retrieve context 
+# Define functions for each tool in the agent
+
+@tool("Get-graph-database-schema")
+def get_schema():
+    """Get the schema of the graph database."""
+    context = graph.schema
+    return context
+
+@tool("Retrieve-financial-documents")
+def retrieve_docs(query: str):
+    """Find details about companies in their financial documents."""
+    # Use the vector to find relevant documents
+    context = chunk_vector.similarity_search(
+        query, 
+        k=3,
+    )
+    return context
+
+# 05 Define a tool to query the database
 @tool("Query-database")
 def query_database(query: str):
     """Get answers to specific questions about companies, risks, and financial metrics."""
@@ -109,7 +115,8 @@ def query_database(query: str):
     )
     return {"context": context}
 
-tools = [retrieve_docs, query_database]
+# Add the tools to the agent
+tools = [get_schema, retrieve_docs, query_database]
 
 agent = create_react_agent(
     model, 
@@ -117,11 +124,11 @@ agent = create_react_agent(
 )
 
 # Run the application
-question = "How many risk facts does Apple face and what are the top ones?"
+query = "What stock has MICROSOFT CORP issued?"
 
 for step in agent.stream(
     {
-        "messages": [{"role": "user", "content": question}]
+        "messages": [{"role": "user", "content": query}]
     },
     stream_mode="values",
 ):
@@ -130,6 +137,9 @@ for step in agent.stream(
 
 
 """
+Summarise the schema of the graph database.
+How does the graph model relate to financial documents and risk factors?
+What are the top risk factors that Apple faces?
 Summarise what risk factors are mentioned in Apple's financial documents?
 What are the top risk factors that Apple faces?
 How many risk facts does Apple face and what are the top ones?
