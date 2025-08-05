@@ -20,6 +20,7 @@
 				"workbench.editorAssociations": {
 					"*.md": "vscode.markdown.preview.editor"
 				},
+				"notebook.output.scrolling": true
 			},
 			"extensions": [
 				"ms-python.python",
