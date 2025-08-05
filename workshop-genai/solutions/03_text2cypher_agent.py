@@ -5,11 +5,9 @@ load_dotenv()
 from langchain.chat_models import init_chat_model
 from langgraph.prebuilt import create_react_agent
 from langchain_core.tools import tool
-from langchain_neo4j import Neo4jGraph, Neo4jVector
+from langchain_neo4j import Neo4jGraph, Neo4jVector, GraphCypherQAChain
 from langchain_openai import OpenAIEmbeddings
-# 01 Import necessary modules for Text to Cypher
 from langchain_core.prompts import PromptTemplate
-from langchain_neo4j import GraphCypherQAChain
 
 # Initialize the LLM
 model = init_chat_model("gpt-4o", model_provider="openai")
@@ -47,14 +45,14 @@ chunk_vector = Neo4jVector.from_existing_index(
     retrieval_query=retrieval_query,
 )
 
-# 02 Create a separate model for Cypher generation
+# Create a separate model for Cypher generation
 cypher_model = init_chat_model(
     "gpt-4o", 
     model_provider="openai",
     temperature=0.0
 )
 
-# 03 Create a cypher generation prompt
+# Create a cypher generation prompt
 cypher_template = """Task:Generate Cypher statement to query a graph database.
 Instructions:
 Use only the provided relationship types and properties in the schema.
@@ -77,7 +75,7 @@ cypher_prompt = PromptTemplate(
     template=cypher_template
 )
 
-# 04 Create the Cypher QA chain
+# Create the Cypher QA chain
 cypher_qa = GraphCypherQAChain.from_llm(
     graph=graph, 
     llm=model,
@@ -106,7 +104,7 @@ def retrieve_docs(query: str):
     )
     return context
 
-# 05 Define a tool to query the database
+# Define a tool to query the database
 @tool("Query-database")
 def query_database(query: str):
     """Get answers to specific questions about companies, risks, and financial metrics."""
@@ -124,7 +122,7 @@ agent = create_react_agent(
 )
 
 # Run the application
-query = "What stock has MICROSOFT CORP issued?"
+query = "What stock has Microsoft issued?"
 
 for step in agent.stream(
     {
@@ -137,11 +135,10 @@ for step in agent.stream(
 
 
 """
-Summarise the schema of the graph database.
+What stock has Microsoft issued?
 How does the graph model relate to financial documents and risk factors?
 What are the top risk factors that Apple faces?
-Summarise what risk factors are mentioned in Apple's financial documents?
+Summarize what risk factors are mentioned in Apple's financial documents?
 What are the top risk factors that Apple faces?
 How many risk facts does Apple face and what are the top ones?
-What stock has MICROSOFT CORP issued?
 """
