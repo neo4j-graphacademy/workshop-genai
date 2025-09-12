@@ -20,14 +20,19 @@
 				"workbench.editorAssociations": {
 					"*.md": "vscode.markdown.preview.editor"
 				},
-				"notebook.output.scrolling": true
+				"notebook.output.scrolling": true,
+				"python.analysis.exclude": [
+					"*.ipynb"
+				],
+				"python.analysis.ignore" : [
+					"*.ipynb"
+				]
 			},
 			"extensions": [
 				"ms-python.python",
 				"neo4j-extensions.neo4j-for-vscode",
 				"ms-toolsai.jupyter",
-				"ms-toolsai.jupyter-keymap",
-				"-ms-python.vscode-pylance"
+				"ms-toolsai.jupyter-keymap"
 				]
 		}
 	}
