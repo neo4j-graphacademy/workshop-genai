@@ -22,10 +22,7 @@
 				},
 				"notebook.output.scrolling": true,
 				"python.analysis.exclude": [
-					"*.ipynb"
-				],
-				"python.analysis.ignore" : [
-					"*.ipynb"
+					"**/workshop-genai/*.ipynb"
 				]
 			},
 			"extensions": [
