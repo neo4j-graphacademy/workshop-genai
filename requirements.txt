@@ -2,7 +2,6 @@ python-dotenv
 neo4j
 neo4j-graphrag[openai]
 jupyter
-pandas
 langgraph
 langchain
 langchain_neo4j
