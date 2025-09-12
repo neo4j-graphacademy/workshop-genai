@@ -26,7 +26,8 @@
 				"ms-python.python",
 				"neo4j-extensions.neo4j-for-vscode",
 				"ms-toolsai.jupyter",
-				"ms-toolsai.jupyter-keymap"
+				"ms-toolsai.jupyter-keymap",
+				"-ms-python.vscode-pylance"
 				]
 		}
 	}
