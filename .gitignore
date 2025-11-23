@@ -2,11 +2,7 @@
 .env
 .venv
 .python-version
-
-my_schema.html
 .idea/
-.python-version
-venv/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
