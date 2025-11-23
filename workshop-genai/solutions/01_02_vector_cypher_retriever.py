@@ -1,6 +1,6 @@
 from neo4j import GraphDatabase
-from neo4j_graphrag.llm import OllamaLLM
-from neo4j_graphrag.embeddings import OllamaEmbeddings
+from neo4j_graphrag.llm import OpenAILLM
+from neo4j_graphrag.embeddings import OpenAIEmbeddings
 from neo4j_graphrag.retrievers import VectorCypherRetriever
 from neo4j_graphrag.generation import GraphRAG
 
@@ -17,12 +17,8 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
 
 # --- Initialize LLM and Embedder ---
-llm = OllamaLLM(
-    model_name='gpt-oss:120b-cloud',
-    model_params={"options": {"temperature": 0}},
-    host="http://localhost:11434"  # Default Ollama server
-)
-embedder = OllamaEmbeddings(model='embeddinggemma')
+llm = OpenAILLM(model_name='gpt-4o', api_key=OPENAI_API_KEY)
+embedder = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
 
 # --- VectorCypherRetriever Example: Detailed Search with Context 
 detail_context_query = """

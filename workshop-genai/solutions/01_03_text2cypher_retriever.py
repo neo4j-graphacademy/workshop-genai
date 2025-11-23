@@ -4,8 +4,6 @@ from neo4j_graphrag.embeddings import OpenAIEmbeddings
 from neo4j_graphrag.retrievers import Text2CypherRetriever
 from neo4j_graphrag.generation import GraphRAG
 from neo4j_graphrag.schema import get_schema
-from neo4j_graphrag.experimental.components.schema import SchemaFromExistingGraphExtractor
-from neo4j_graphrag.experimental.utils.schema import schema_visualization
 import asyncio
 
 # Load environment variables
@@ -26,39 +24,6 @@ embedder = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
 
 schema = get_schema(driver)
 print(schema)
-
-async def visualize_schema():
-    """
-    Create an interactive HTML visualization of the graph schema.
-
-    This function:
-    1. Extracts the structured schema from the Neo4j database
-    2. Creates an interactive visualization using neo4j-viz
-    3. Saves the visualization as an HTML file
-
-    The visualization shows:
-    - All node types (labels) as nodes
-    - All relationship types as connections between nodes
-    - Properties for each node and relationship type
-    """
-    # Extract structured schema from the existing graph
-    # This queries the database to get all node types, relationship types, and properties
-    schema_extractor = SchemaFromExistingGraphExtractor(driver=driver)
-    graph_schema = await schema_extractor.run()
-
-    # Create the visualization
-    # VG is a VisualizationGraph object that contains nodes and relationships
-    VG = schema_visualization(graph_schema)
-    html = VG.render()
-
-    # Save the generated HTML file
-    # This creates an interactive graph that can be opened in a web browser
-    with open("my_schema.html", "w") as f:
-        f.write(html.data)
-    print("Schema visualization saved to my_schema.html")
-
-# Run the async function to generate the visualization
-asyncio.run(visualize_schema())
 
 # --- Text2CypherRetriever Example ---
 text2cypher_retriever = Text2CypherRetriever(
