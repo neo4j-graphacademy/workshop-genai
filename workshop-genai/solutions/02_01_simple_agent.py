@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from langchain.chat_models import init_chat_model
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 from langchain_core.tools import tool
 from langchain_neo4j import Neo4jGraph
 
@@ -29,9 +29,9 @@ def get_schema():
 tools = [get_schema]
 
 # Create the agent with the model and tools
-agent = create_react_agent(
-    model, 
-    tools
+agent = create_agent(
+    model=model, 
+    tools=tools
 )
 
 # Run the application

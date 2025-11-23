@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from langchain.chat_models import init_chat_model
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 from langchain_core.tools import tool
 from langchain_neo4j import Neo4jGraph, Neo4jVector
 from langchain_openai import OpenAIEmbeddings
@@ -25,12 +25,14 @@ graph = Neo4jGraph(
 # Define the retrieval query
 retrieval_query = """
 MATCH (node)-[:FROM_DOCUMENT]-(doc:Document)-[:FILED]-(company:Company)
+OPTIONAL MATCH (company)-[:FACES_RISK]->(risk:RiskFactor)
+WITH node, score, company, collect(risk.name) as risks
 RETURN 
     node.text as text,
     score,
     {
         company: company.name,
-        risks: [ (company:Company)-[:FACES_RISK]->(risk:RiskFactor) | risk.name ]
+        risks: risks
     } AS metadata
 ORDER BY score DESC
 """
@@ -67,9 +69,9 @@ def retrieve_docs(query: str):
 # Add the tools to the agent
 tools = [get_schema, retrieve_docs]
 
-agent = create_react_agent(
-    model, 
-    tools
+agent = create_agent(
+    model=model, 
+    tools=tools
 )
 
 # Run the application

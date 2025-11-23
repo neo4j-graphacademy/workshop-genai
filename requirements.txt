@@ -6,3 +6,4 @@ langgraph
 langchain
 langchain_neo4j
 langchain_openai
+pandas

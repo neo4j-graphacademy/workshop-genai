@@ -53,6 +53,8 @@ print(response.answer)
 print("Generate Cypher:", response.retriever_result.metadata["cypher"])
 print("Context:", *response.retriever_result.items, sep="\n")
 
+# Close the driver connection to prevent cleanup warnings
+driver.close()
 
 """
 Summarise the products mentioned in the company filings.
