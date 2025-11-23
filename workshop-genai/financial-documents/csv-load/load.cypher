@@ -11,7 +11,7 @@ FOR (n:__index__) ON (n.`:ID`);
 CREATE VECTOR INDEX chunkEmbeddings IF NOT EXISTS
 FOR (n:Chunk) ON (n.embedding)
 OPTIONS { indexConfig : {
-  `vector.dimensions`: 1536,
+  `vector.dimensions`: 768,
   `vector.similarity_function`: 'cosine'
   }
 };
