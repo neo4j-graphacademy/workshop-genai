@@ -1,4 +1,4 @@
-# This will test the environment to ensure that the .env file is set up 
+# This will test the environment to ensure that the .env file is set up
 # correctly and that the OpenAI and Neo4j connections are working.
 import os
 import unittest
@@ -37,6 +37,7 @@ class TestEnvironment(unittest.TestCase):
         self.env_variable_exists('NEO4J_URI')
         self.env_variable_exists('NEO4J_USERNAME')
         self.env_variable_exists('NEO4J_PASSWORD')
+        self.env_variable_exists('NEO4J_DATABASE')
         TestEnvironment.skip_neo4j_test = False
 
     def test_openai_connection(self):
@@ -46,7 +47,7 @@ class TestEnvironment(unittest.TestCase):
         from openai import OpenAI, AuthenticationError
 
         llm = OpenAI()
-        
+
         try:
             models = llm.models.list()
         except AuthenticationError as e:
@@ -63,7 +64,7 @@ class TestEnvironment(unittest.TestCase):
 
         driver = GraphDatabase.driver(
             os.getenv('NEO4J_URI'),
-            auth=(os.getenv('NEO4J_USERNAME'), 
+            auth=(os.getenv('NEO4J_USERNAME'),
                   os.getenv('NEO4J_PASSWORD'))
         )
         try:
@@ -78,7 +79,7 @@ class TestEnvironment(unittest.TestCase):
             connected,
             "Neo4j connection failed. Check the NEO4J_URI, NEO4J_USERNAME, and NEO4J_PASSWORD values in .env file."
             )
-        
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(TestEnvironment('test_env_file_exists'))
@@ -91,4 +92,3 @@ def suite():
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(suite())
-    
