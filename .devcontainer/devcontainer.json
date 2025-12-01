@@ -1,38 +1,26 @@
 {
-	"name": "Neo4j GenAI Workshop",
+	"name": "Neo4j and Generative AI Workshop",
 	"image": "mcr.microsoft.com/devcontainers/python:1-3.12-bullseye",
 	"postCreateCommand": "bash .devcontainer/post_create.sh",
 	"customizations": {
 		"codespaces": {
 			"openFiles": [
-				".devcontainer/SETUP.md",
 				".env.example",
-				"workshop-genai/test_environment.py"
+				"test_environment.py",
+				".devcontainer/README.md"
 				]
 		},
 		"vscode": {
 			"settings": {
 				"python.createEnvironment.trigger": "off",
-				"python.defaultInterpreterPath": "/usr/local/bin/python",
-				"jupyter.kernels.excludePythonEnvironments": [
-					"/usr/bin/python3"
-				],
 				"workbench.editorAssociations": {
 					"*.md": "vscode.markdown.preview.editor"
-				},
-				"notebook.output.scrolling": true,
-				"python.analysis.exclude": [
-					"**/workshop-genai/*.ipynb"
-				],
-				"python.analysis.diagnosticSeverityOverrides": {
-					"reportMissingImports": "none"
 				}
 			},
 			"extensions": [
 				"ms-python.python",
-				"neo4j-extensions.neo4j-for-vscode",
-				"ms-toolsai.jupyter",
-				"ms-toolsai.jupyter-keymap"
+				"ms-python.debugpy",
+				"neo4j-extensions.neo4j-for-vscode"
 				]
 		}
 	}

@@ -1,16 +1,8 @@
-= Neo4j & Generative AI Hands-On Workshop
+= Neo4j and Generative AI Workshop
 
-This repository accompanies the link:https://graphacademy.neo4j.com/courses/workshop-genai/[Neo4j & Generative AI Hands-On Workshop^] on link:https://graphacademy.neo4j.com[GraphAcademy^].
+This repository accompanies the link:https://graphacademy.neo4j.com/courses/workshop-genai2/[Neo4j and Generative AI Workshop^] on link:https://graphacademy.neo4j.com[GraphAcademy^].
 
-For a complete walkthrough of this repository, https://graphacademy.neo4j.com/courses/workshop-genai/[enrol now^].
+For a complete walkthrough of this repository, link:https://graphacademy.neo4j.com/courses/workshop-genai2[enrol now^].
 
-link:https://codespaces.new/neo4j-graphacademy/workshop-genai[image:https://github.com/codespaces/badge.svg[Open in GitHub Codespaces]^]
+link:https://codespaces.new/neo4j-graphacademy/workshop-genai2[image:https://github.com/codespaces/badge.svg[Open in GitHub Codespaces]^]
 
-== Data
-
-The data is automatically imported into the Neo4j database by GraphAcademy.
-
-The link:./workshop-genai/financial-documents/csv-load/load.cypher[workshop-genai/financial-documents/csv-load/load.cypher^] file contains the Cypher commands that import the data.
-
-[NOTE]
-You don't need to import the data yourself. GraphAcademy will do this for you when you enrol in the workshop.
