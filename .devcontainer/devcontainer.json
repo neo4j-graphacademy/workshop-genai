@@ -5,9 +5,9 @@
 	"customizations": {
 		"codespaces": {
 			"openFiles": [
+				".devcontainer/README.md",
 				".env.example",
-				"test_environment.py",
-				".devcontainer/README.md"
+				"test_environment.py"
 				]
 		},
 		"vscode": {
