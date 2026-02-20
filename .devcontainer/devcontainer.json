@@ -20,7 +20,8 @@
 			"extensions": [
 				"ms-python.python",
 				"ms-python.debugpy",
-				"neo4j-extensions.neo4j-for-vscode"
+				"neo4j-extensions.neo4j-for-vscode",
+				"tomoki1207.pdf"
 				]
 		}
 	}
