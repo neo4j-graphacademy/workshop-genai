@@ -63,10 +63,9 @@ vector_retriever = VectorCypherRetriever(
 )
 
 # tag::llm[]
-# Crete LLM for Text2CypherRetriever
+# Create LLM for Text2CypherRetriever
 llm = OpenAILLM(
-    model_name="gpt-4o", 
-    model_params={"temperature": 0}
+    model_name="gpt-5.2"
 )
 # end::llm[]
 
