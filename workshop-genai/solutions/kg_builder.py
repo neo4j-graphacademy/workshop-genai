@@ -28,7 +28,7 @@ llm = OpenAILLM(
 
 # tag::embedder[]
 embedder = OpenAIEmbeddings(
-    model="text-embedding-ada-002"
+    model="text-embedding-3-small"
 )
 # end::embedder[]
 

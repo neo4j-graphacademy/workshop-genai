@@ -18,7 +18,7 @@ driver = GraphDatabase.driver(
 )
 
 # Create embedder
-embedder = OpenAIEmbeddings(model="text-embedding-ada-002")
+embedder = OpenAIEmbeddings(model="text-embedding-3-small")
 
 # Define retrieval query
 retrieval_query = """
