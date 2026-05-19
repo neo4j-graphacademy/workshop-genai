@@ -4,6 +4,7 @@ load_dotenv()
 
 from neo4j_graphrag.experimental.components.schema import SchemaFromTextExtractor
 from neo4j_graphrag.llm import OpenAILLM
+from rich import print
 import asyncio
 
 schema_extractor = SchemaFromTextExtractor(
