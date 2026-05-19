@@ -27,7 +27,7 @@ driver = GraphDatabase.driver(
 
 # tag::embedder[]
 # Create embedder
-embedder = OpenAIEmbeddings(model="text-embedding-ada-002")
+embedder = OpenAIEmbeddings(model="text-embedding-3-small")
 # end::embedder[]
 
 # tag::retrieval_query[]
@@ -37,18 +37,16 @@ MATCH (node)-[:FROM_DOCUMENT]->(d)-[:PDF_OF]->(lesson)
 RETURN
     node.text as text, score,
     lesson.url as lesson_url,
-    collect { 
+    collect {
         MATCH (node)<-[:FROM_CHUNK]-(entity)-[r]->(other)-[:FROM_CHUNK]->()
         WITH toStringList([
-            labels(entity)[2], 
-            entity.name, 
-            entity.type, 
-            entity.description, 
-            type(r), 
-            labels(other)[2], 
-            other.name, 
-            other.type, 
-            other.description
+            [l IN labels(entity)
+                WHERE NOT l IN ["__KGBuilder__", "__Entity__"]][0],
+            entity.name,
+            type(r),
+            [l IN labels(other)
+                WHERE NOT l IN ["__KGBuilder__", "__Entity__"]][0],
+            other.name
             ]) as values
         RETURN reduce(acc = "", item in values | acc || coalesce(item || ' ', ''))
     } as associated_entities

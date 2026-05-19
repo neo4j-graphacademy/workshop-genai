@@ -26,7 +26,7 @@ llm = OpenAILLM(
 )
 
 embedder = OpenAIEmbeddings(
-    model="text-embedding-ada-002"
+    model="text-embedding-3-small"
 )
 
 # tag::text_splitter[]

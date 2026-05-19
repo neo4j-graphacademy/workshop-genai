@@ -18,7 +18,7 @@ driver = GraphDatabase.driver(
 )
 
 # Create embedder
-embedder = OpenAIEmbeddings(model="text-embedding-ada-002")
+embedder = OpenAIEmbeddings(model="text-embedding-3-small")
 
 # Define retrieval query
 # tag::simple_retrieval_query[]
@@ -45,15 +45,13 @@ RETURN
     collect { 
         MATCH (node)<-[:FROM_CHUNK]-(entity)-[r]->(other)-[:FROM_CHUNK]->()
         WITH toStringList([
-            labels(entity)[2], 
+            [l IN labels(entity)
+                WHERE NOT l IN ["__KGBuilder__", "__Entity__"]][0],
             entity.name, 
-            entity.type, 
-            entity.description, 
             type(r), 
-            labels(other)[2], 
-            other.name, 
-            other.type, 
-            other.description
+            [l IN labels(other)
+                WHERE NOT l IN ["__KGBuilder__", "__Entity__"]][0],
+            other.name 
             ]) as values
         RETURN reduce(acc = "", item in values | acc || coalesce(item || ' ', ''))
     } as associated_entities

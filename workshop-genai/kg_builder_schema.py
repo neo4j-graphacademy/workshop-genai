@@ -24,7 +24,7 @@ llm = OpenAILLM(
 )
 
 embedder = OpenAIEmbeddings(
-    model="text-embedding-ada-002"
+    model="text-embedding-3-small"
 )
 
 text_splitter = FixedSizeSplitter(chunk_size=500, chunk_overlap=100)
