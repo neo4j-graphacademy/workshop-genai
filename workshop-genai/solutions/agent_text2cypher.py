@@ -39,15 +39,13 @@ RETURN
     collect { 
         MATCH (node)<-[:FROM_CHUNK]-(entity)-[r]->(other)-[:FROM_CHUNK]->()
         WITH toStringList([
-            labels(entity)[2], 
+            [l IN labels(entity)
+                WHERE NOT l IN ["__KGBuilder__", "__Entity__"]][0],
             entity.name, 
-            entity.type, 
-            entity.description, 
             type(r), 
-            labels(other)[2], 
-            other.name, 
-            other.type, 
-            other.description
+            [l IN labels(other)
+                WHERE NOT l IN ["__KGBuilder__", "__Entity__"]][0],
+            other.name
             ]) as values
         RETURN reduce(acc = "", item in values | acc || coalesce(item || ' ', ''))
     } as associated_entities
@@ -152,4 +150,4 @@ Each lesson is part of a module. How many lessons are in each module?
 Search the graph and return a list of challenges.
 What benefits are associated to the technologies described in the knowledge graph?
 """
-# end::example_queries[]    
+# end::example_queries[]
