@@ -27,7 +27,7 @@ driver = GraphDatabase.driver(
 
 # tag::embedder[]
 # Create embedder
-embedder = OpenAIEmbeddings(model="text-embedding-ada-002")
+embedder = OpenAIEmbeddings(model="text-embedding-3-small")
 # end::embedder[]
 
 # tag::retrieval_query[]
