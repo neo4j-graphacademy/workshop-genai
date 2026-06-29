@@ -1,0 +1,59 @@
+= Instructor Notes
+
+These notes are for running the workshop with both the Python GraphRAG path and the Aura Agent extra.
+
+== Timing Tips
+
+* Have students start their AuraDB Free instances at the beginning of class so they are ready when it is time to rebuild the knowledge graph for Aura Agent.
+* If time is short, use the completed files in `workshop-genai/solutions`.
+* If time is very short, build only the complete graph with `workshop-genai/solutions/kg_structured_builder.py`, then create the vector index and move to Aura Agent.
+* If learners build a graph outside the course flow, make sure they still create the `chunkEmbedding` vector index so vector retrievers work.
+* OpenAI API key distribution can be handled through link:https://dev.neo4j.com/workshop-genai-notes[`dev.neo4j.com/workshop-genai-notes`^].
+
+== Suggested Delivery Plan
+
+Skip the first two GraphAcademy sections if the audience already understands basic GenAI concepts.
+
+. Start with GraphRAG:
+  link:https://graphacademy.neo4j.com/courses/workshop-genai/1-generative-ai/2-graphrag/[GraphRAG^]
+. Continue to GraphRAG for Python:
+  link:https://graphacademy.neo4j.com/courses/workshop-genai/1-generative-ai/4-neo4j-graphrag/[GraphRAG for Python^]
+. Optionally skip the example/process overview and focus on the concrete cases in the repo/Codespace.
+. Start KG construction:
+  link:https://graphacademy.neo4j.com/courses/workshop-genai/2-knowledge-graph-construction/1-knowledge-graph-construction/[Constructing knowledge graphs^]
+. Optionally skip schema extraction as a hands-on section.
+  Mention that if no schema is provided, the LLM may create one that works, but it is better to provide input on the graph shape you want.
+. Start KG creation:
+  link:https://graphacademy.neo4j.com/courses/workshop-genai/2-knowledge-graph-construction/3-create-a-graph/[Create a graph^]
+. Skip "Creating your own knowledge graph".
+  Mention Document Intelligence as something learners can try later.
+. Skip the final "Create an agent" challenge if you are doing the Aura Agent extra instead.
+  Mention it as a self-directed exercise students can try later.
+
+== Aura Agent Extra
+
+. Keep a separate Aura Query window open and suggest students do the same.
+. Add each participant's downloaded Aura credentials to `.env`.
+  If they still have Sandbox or other Neo4j credentials in the file, comment those out.
+. Run the hybrid KG creation pipeline:
++
+[source,sh]
+----
+python workshop-genai/solutions/kg_structured_builder.py
+----
+. Create the vector index:
++
+[source,sh]
+----
+python workshop-genai/create_vector_index.py
+----
+. Create the Aura Agent using link:README.adoc[this guide].
+. Demo with:
+  * "How does temperature affect an LLM?"
+  * "How many lessons are there?"
+
+== Calls To Action
+
+* Visit the Neo4j booth at P3.
+* Find more free Neo4j courses on GraphAcademy.
+* Join the Neo4j Discord and Discourse communities.

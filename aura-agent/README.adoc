@@ -1,0 +1,139 @@
+= Neo4j Aura Agent Workshop Path
+
+This path adds a managed Aura Agent experience on top of the same knowledge graph used by the Python GraphRAG examples.
+Keep the Python path available for learners who want to understand the building blocks in code; use this path to show how Aura Agent packages those ideas into tools.
+
+== When To Use This Path
+
+Use the Aura Agent path after learners have seen GraphRAG concepts and at least one Python retriever example.
+If time is short, build the complete graph with the solution file and move straight to Aura Agent.
+
+[source,sh]
+----
+python workshop-genai/solutions/kg_structured_builder.py
+python workshop-genai/create_vector_index.py
+----
+
+Have students start their AuraDB Free instances at the beginning of class so the instances are ready when it is time to rebuild the knowledge graph for Aura Agent.
+
+== Prerequisites
+
+* Each participant has their own AuraDB Free instance.
+* The instance contains the complete workshop knowledge graph.
+* The `chunkEmbedding` vector index exists.
+* The participant has access to Aura Console and can create an Aura Agent.
+* A separate Aura Query window is open so learners can inspect data while configuring the agent.
+
+If you prefer to point learners back to the course instructions for the index step, use the link:https://graphacademy.neo4j.com/courses/workshop-genai/3-retrieval/2-vector-cypher-retriever/[Vector Cypher Retriever lesson^].
+
+== Agent Configuration
+
+Create an Aura Agent with these values:
+
+Name::
+GenAI Fundamentals Agent
+
+Description::
+Provides Neo4j GenAI information grounded in a GraphAcademy course.
+
+Prompt instruction::
++
+[source,text]
+----
+You are a helpful assistant for the GenAI Fundamentals Neo4j knowledge graph, which stores course lessons, the documents/chunks they came from, and the technologies/concepts they describe. Use the tools to ground every answer in the graph. Prefer Search lesson content for conceptual/"what does it say about..." questions, and Query database for precise/aggregate questions ("how many...", "which module...", "list all..."). Cite lesson URLs when available. If a tool returns nothing, say so rather than guessing.
+----
+
+== Tools
+
+This workshop agent only needs two tools.
+The built-in Text2Cypher tool can inspect the database schema as needed, so do not add a separate schema tool.
+
+=== Tool 1: Text2Cypher
+
+Name::
+Query database
+
+Type::
+Text2Cypher / Natural Language to Cypher
+
+Description::
+Use for precise and aggregate questions such as "how many...", "which module...", and "list all...".
+
+=== Tool 2: Vector Similarity
+
+Name::
+Search lesson content
+
+Type::
+Vector similarity search
+
+Description::
+Semantic search over lesson text.
+Use for conceptual questions about what the lessons say, such as "what is GraphRAG?" or "explain vector indexes".
+Returns matching lesson chunks, their lesson URL, and related technologies/concepts from the graph.
+
+Vector index::
+`chunkEmbedding`
+
+Top K::
+`5`
+
+Retrieval Cypher::
++
+[source,cypher]
+----
+MATCH (node)-[:FROM_DOCUMENT]->(d)-[:PDF_OF]->(lesson)
+RETURN
+    node.text as text, score,
+    lesson.url as lesson_url,
+    collect {
+        MATCH (node)<-[:FROM_CHUNK]-(entity)-[r]->(other)-[:FROM_CHUNK]->()
+        WITH toStringList([
+            [l IN labels(entity)
+                WHERE NOT l IN ["__KGBuilder__", "__Entity__"]][0],
+            entity.name,
+            type(r),
+            [l IN labels(other)
+                WHERE NOT l IN ["__KGBuilder__", "__Entity__"]][0],
+            other.name
+            ]) as values
+        RETURN reduce(acc = "", item in values | acc || coalesce(item || ' ', ''))
+    } as associated_entities
+----
+
+== Demo Questions
+
+Use these in the Agent preview/demo:
+
+* How does temperature affect an LLM?
+* What is GraphRAG?
+* Explain vector indexes.
+* How many lessons are there?
+* Which module covers vector retrievers?
+* List the technologies mentioned in the graph.
+
+Expected behavior:
+
+* Conceptual questions should use `Search lesson content`.
+* Count/list/module questions should use `Query database`.
+* Answers should cite lesson URLs when the tools return them.
+* If no tool returns relevant results, the agent should say so instead of guessing.
+
+== Workshop Flow
+
+. Build the complete knowledge graph.
+. Create the vector index.
+. Open Aura Query in a separate window.
+. Create the Aura Agent.
+. Add the `Query database` Text2Cypher tool.
+. Add the `Search lesson content` vector similarity tool.
+. Ask the demo questions and watch which tool the agent uses.
+
+== Related Files
+
+* link:agent-prompt.txt[Agent prompt]
+* link:search-lesson-content.cypher[Vector similarity retrieval Cypher]
+* link:instructor-notes.adoc[Instructor notes]
+* link:../workshop-genai/solutions/kg_structured_builder.py[Complete graph builder]
+* link:../workshop-genai/solutions/agent_text2cypher.py[Python agent example using the same retriever pattern]
+* link:https://graphacademy.neo4j.com/courses/workshop-genai/3-retrieval/2-vector-cypher-retriever/[GraphAcademy vector index lesson^]

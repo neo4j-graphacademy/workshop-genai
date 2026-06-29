@@ -1,4 +1,4 @@
-# This will test the environment to ensure that the .env file is set up 
+# This will test the environment to ensure that the .env file is set up
 # correctly and that the OpenAI and Neo4j connections are working.
 import os
 import unittest
@@ -38,6 +38,14 @@ class TestEnvironment(unittest.TestCase):
         self.env_variable_exists('NEO4J_USERNAME')
         self.env_variable_exists('NEO4J_PASSWORD')
         self.env_variable_exists('NEO4J_DATABASE')
+
+        neo4j_uri = os.getenv('NEO4J_URI')
+        if neo4j_uri is not None:
+            self.assertFalse(
+                neo4j_uri.startswith(('http://', 'https://')),
+                "NEO4J_URI should be the Aura driver URI, not the Neo4j Console or Browser URL. It usually starts with neo4j+s://."
+            )
+
         TestEnvironment.skip_neo4j_test = False
 
     def test_openai_connection(self):
@@ -47,7 +55,7 @@ class TestEnvironment(unittest.TestCase):
         from openai import OpenAI, AuthenticationError
 
         llm = OpenAI()
-        
+
         try:
             models = llm.models.list()
         except AuthenticationError as e:
@@ -58,7 +66,7 @@ class TestEnvironment(unittest.TestCase):
 
     def test_neo4j_connection(self):
 
-        msg = "Neo4j connection failed. Check the NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4j_DATABASE values in .env file."
+        msg = "Neo4j Aura connection failed. Check the NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, and NEO4J_DATABASE values in .env file."
         connected = False
 
         if TestEnvironment.skip_neo4j_test:
@@ -68,7 +76,7 @@ class TestEnvironment(unittest.TestCase):
 
         driver = GraphDatabase.driver(
             os.getenv('NEO4J_URI'),
-            auth=(os.getenv('NEO4J_USERNAME'), 
+            auth=(os.getenv('NEO4J_USERNAME'),
                   os.getenv('NEO4J_PASSWORD'))
         )
         try:
@@ -78,18 +86,18 @@ class TestEnvironment(unittest.TestCase):
                 connected = True
 
             except Exception as e:
-                msg = "Neo4j database query failed. Check the NEO4J_DATABASE value in .env file."
-                
+                msg = "Neo4j database query failed. Check the NEO4J_DATABASE value in .env file. For most AuraDB instances this is neo4j."
+
         except Exception as e:
-            msg = "Neo4j verify connection failed. Check the NEO4J_URI, NEO4J_USERNAME, and NEO4J_PASSWORD values in .env file."
-            
+            msg = "Neo4j Aura verify connection failed. Check the Aura driver URI, username, and password in .env. The URI usually starts with neo4j+s://."
+
         driver.close()
 
         self.assertTrue(
             connected,
             msg
             )
-        
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(TestEnvironment('test_env_file_exists'))
@@ -102,4 +110,3 @@ def suite():
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(suite())
-    

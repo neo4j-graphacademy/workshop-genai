@@ -1,10 +1,12 @@
 {
-	"name": "Neo4j and Generative AI Workshop",
+	"name": "Neo4j and Generative AI Workshop - Aura",
 	"image": "mcr.microsoft.com/devcontainers/python:3.13",
 	"postCreateCommand": "bash .devcontainer/post_create.sh",
 	"customizations": {
 		"codespaces": {
 			"openFiles": [
+				"README.adoc",
+				"aura-agent/README.adoc",
 				".devcontainer/README.md",
 				".env.example",
 				"test_environment.py"

@@ -1,8 +1,129 @@
-= Neo4j and Generative AI Workshop
+= Neo4j and Generative AI Workshop - Aura Edition
 
 This repository accompanies the link:https://graphacademy.neo4j.com/courses/workshop-genai/[Neo4j and Generative AI Workshop^] on link:https://graphacademy.neo4j.com[GraphAcademy^].
 
-For a complete walkthrough of this repository, link:https://graphacademy.neo4j.com/courses/workshop-genai[enrol now^].
+This edition is set up so each workshop participant uses their own Neo4j AuraDB Free instance instead of a shared Neo4j Sandbox.
+The Python exercises read the Neo4j connection details from `.env`, so every participant can run the same code against their own AuraDB credentials.
 
-link:https://codespaces.new/neo4j-graphacademy/workshop-genai[image:https://github.com/codespaces/badge.svg[Open in GitHub Codespaces]^]
+link:https://codespaces.new/MacklinEngineering/workshop-genai[image:https://github.com/codespaces/badge.svg[Open in GitHub Codespaces]^]
 
+== Prerequisites
+
+* A Neo4j Aura account for each participant.
+* One Neo4j AuraDB Free instance for each participant.
+* The participant's Aura connection details downloaded from Aura Console.
+* An OpenAI API key.
+* Python 3.13, or GitHub Codespaces/devcontainer.
+
+Use each participant's own AuraDB Free instance for the workshop.
+Several exercises create graph data, indexes, and embeddings, and the reset helper deletes all nodes and relationships in the configured database.
+Do not point multiple participants at the same database.
+
+== Aura Setup
+
+. In link:https://console.neo4j.io/[Neo4j Aura Console^], create or sign in to an Aura account, then create a new AuraDB instance and choose the Free tier.
++
+AuraDB Free is limited to one Free instance per account, so each participant should create and use their own account/instance for the workshop.
+See Neo4j's link:https://neo4j.com/docs/aura/getting-started/create-instance/[create-instance guide^] for the Aura Console walkthrough.
+
+. Download or copy the credentials for the new instance; you will need the URI, username, password, and database name.
+
+. Copy the environment template:
++
+[source,sh]
+----
+cp .env.example .env
+----
+
+. Open `.env` and fill in the values from your own Aura credentials file:
++
+[source,env]
+----
+OPENAI_API_KEY="sk-..."
+NEO4J_URI="neo4j+s://<your-instance-id>.databases.neo4j.io"
+NEO4J_USERNAME="neo4j"
+NEO4J_PASSWORD="<your-aura-password>"
+NEO4J_DATABASE="neo4j"
+----
++
+Use the Aura driver URI, not the Neo4j Console or Browser URL.
+Aura driver URIs usually start with `neo4j+s://`.
+
+. Install dependencies if you are not using the devcontainer:
++
+[source,sh]
+----
+pip3 install -r requirements.txt
+----
+
+. Test the OpenAI and Aura connections:
++
+[source,sh]
+----
+python test_environment.py
+----
+
+== Build The Workshop Graph
+
+Both workshop paths use the same AuraDB Free instance and the same knowledge graph.
+
+If you are following the Python lessons, build the graph as you reach each exercise.
+If you want to prepare quickly for the Aura Agent path, build the complete graph with:
+
+[source,sh]
+----
+python workshop-genai/solutions/kg_structured_builder.py
+----
+
+You can also run the working file in the main workshop folder:
+
+[source,sh]
+----
+python workshop-genai/kg_structured_builder.py
+----
+
+Create the vector index used by the vector RAG exercises:
+
+[source,sh]
+----
+python workshop-genai/create_vector_index.py
+----
+
+== Path 1: Python GraphRAG
+
+Use this path to learn the GraphRAG building blocks in code.
+
+Then run the retriever and agent examples:
+
+[source,sh]
+----
+python workshop-genai/vector_cypher_rag.py
+python workshop-genai/text2cypher_rag.py
+python workshop-genai/agent.py
+----
+
+If time is short, use the completed examples in `workshop-genai/solutions`.
+
+== Path 2: Neo4j Aura Agent
+
+Use this path to build a managed no-code/low-code agent in Aura on top of the same knowledge graph.
+This is a good extra section after the Python GraphRAG material, or a faster demo path when you already have the graph and vector index built.
+
+Follow the link:aura-agent/README.adoc[Aura Agent workshop guide].
+It includes:
+
+* The agent name, description, and prompt.
+* The two-tool setup: a default Text2Cypher tool and a vector similarity tool.
+* The Cypher for the `Search lesson content` similarity tool.
+* Demo questions and instructor timing notes.
+
+== Resetting A Workshop Instance
+
+To reuse your own AuraDB Free instance from a clean graph:
+
+[source,sh]
+----
+python workshop-genai/reset_workshop_database.py
+----
+
+The reset helper asks for confirmation before deleting data.
