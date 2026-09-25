@@ -8,7 +8,7 @@ from neo4j import GraphDatabase
 from neo4j_graphrag.llm import OpenAILLM
 from neo4j_graphrag.embeddings import OpenAIEmbeddings
 from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
-from neo4j_graphrag.experimental.components.text_splitters.fixed_size_splitter import FixedSizeSplitter
+from neo4j_graphrag.components.text_splitters.fixed_size_splitter import FixedSizeSplitter
 
 neo4j_driver = GraphDatabase.driver(
     os.getenv("NEO4J_URI"),
@@ -42,7 +42,7 @@ kg_builder = SimpleKGPipeline(
     driver=neo4j_driver, 
     neo4j_database=os.getenv("NEO4J_DATABASE"), 
     embedder=embedder, 
-    from_pdf=True,
+    from_file=True,
     text_splitter=text_splitter,
     schema={
         "node_types": NODE_TYPES,
@@ -76,7 +76,6 @@ RELATIONSHIP_TYPES = [
     "USED_IN",
     "LEADS_TO",
     "HAS_CHALLENGE",
-    "LEADS_TO",
     "CITES"
 ]
 # end::relationship_types[]
@@ -101,7 +100,7 @@ kg_builder = SimpleKGPipeline(
     driver=neo4j_driver, 
     neo4j_database=os.getenv("NEO4J_DATABASE"), 
     embedder=embedder, 
-    from_pdf=True,
+    from_file=True,
     text_splitter=text_splitter,
     schema={
         "node_types": NODE_TYPES,

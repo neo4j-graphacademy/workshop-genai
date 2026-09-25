@@ -31,7 +31,7 @@ kg_builder = SimpleKGPipeline(
     driver=neo4j_driver, 
     neo4j_database=os.getenv("NEO4J_DATABASE"), 
     embedder=embedder, 
-    from_pdf=True,
+    from_file=True,
 )
 
 pdf_file = "./workshop-genai/data/genai-fundamentals_1-generative-ai_1-what-is-genai.pdf"
