@@ -97,24 +97,24 @@ SET l.name = $lesson,
 MERGE (d)-[:PDF_OF]->(l)
 """
 
-for doc in docs_csv:
+async def main():
+    for doc in docs_csv:
 
-    # Create the complete PDF path
-    doc["pdf_path"] = os.path.join(data_path, doc["filename"])
-    print(f"Processing document: {doc['pdf_path']}")
+        # Create the complete PDF path
+        doc["pdf_path"] = os.path.join(data_path, doc["filename"])
+        print(f"Processing document: {doc['pdf_path']}")
 
-    # Entity extraction and KG population
-    result = asyncio.run(
-        kg_builder.run_async(
+        # Entity extraction and KG population
+        result = await kg_builder.run_async(
             file_path=os.path.join(doc["pdf_path"])
         )
-    )
 
-    # Create structured graph
-    records, summary, keys = neo4j_driver.execute_query(
-        cypher,
-        parameters_=doc,
-        database_=os.getenv("NEO4J_DATABASE")
-    )
-    print(result, summary.counters)
+        # Create structured graph
+        records, summary, keys = neo4j_driver.execute_query(
+            cypher,
+            parameters_=doc,
+            database_=os.getenv("NEO4J_DATABASE")
+        )
+        print(result, summary.counters)
 
+asyncio.run(main())
