@@ -9,7 +9,7 @@ import asyncio
 
 schema_extractor = SchemaFromTextExtractor(
     llm = OpenAILLM(
-        model_name="gpt-5-nano",
+        model_name="gpt-5.2",
     ),
     use_structured_output=True,
 )

@@ -49,12 +49,16 @@ print(result.result)
 # end::run_one_doc[]
 
 # tag::run_multiple_docs[]
-data_path = "./workshop-genai/data/"
-pdf_files = [os.path.join(data_path, f) for f in os.listdir(data_path) if f.endswith('.pdf')]
+# Use a single event loop for all documents
+async def main():
+    data_path = "./workshop-genai/data/"
+    pdf_files = [os.path.join(data_path, f) for f in os.listdir(data_path) if f.endswith('.pdf')]
 
-for pdf_file in pdf_files:
+    for pdf_file in pdf_files:
 
-    print(f"Processing {pdf_file}")
-    result = asyncio.run(kg_builder.run_async(file_path=pdf_file))
-    print(result.result)
+        print(f"Processing {pdf_file}")
+        result = await kg_builder.run_async(file_path=pdf_file)
+        print(result.result)
+
+asyncio.run(main())
 # end::run_multiple_docs[]

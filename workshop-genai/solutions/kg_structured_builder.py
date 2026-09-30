@@ -101,28 +101,28 @@ MERGE (d)-[:PDF_OF]->(l)
 """
 # end::cypher[]
 
-for doc in docs_csv:
+async def main():
+    for doc in docs_csv:
 
-    # tag::pdf_path[]
-    # Create the complete PDF path
-    doc["pdf_path"] = os.path.join(data_path, doc["filename"])
-    print(f"Processing document: {doc['pdf_path']}")
-    # end::pdf_path[]
+        # tag::pdf_path[]
+        # Create the complete PDF path
+        doc["pdf_path"] = os.path.join(data_path, doc["filename"])
+        print(f"Processing document: {doc['pdf_path']}")
+        # end::pdf_path[]
 
-    # Entity extraction and KG population
-    result = asyncio.run(
-        kg_builder.run_async(
+        # Entity extraction and KG population
+        result = await kg_builder.run_async(
             file_path=os.path.join(doc["pdf_path"])
         )
-    )
 
-    # tag::create_structured_graph[]
-    # Create structured graph
-    records, summary, keys = neo4j_driver.execute_query(
-        cypher,
-        parameters_=doc,
-        database_=os.getenv("NEO4J_DATABASE")
-    )
-    # end::create_structured_graph[]
-    print(result, summary.counters)
-    
+        # tag::create_structured_graph[]
+        # Create structured graph
+        records, summary, keys = neo4j_driver.execute_query(
+            cypher,
+            parameters_=doc,
+            database_=os.getenv("NEO4J_DATABASE")
+        )
+        # end::create_structured_graph[]
+        print(result, summary.counters)
+
+asyncio.run(main())
