@@ -14,9 +14,9 @@ jiter                == 0.17.0
 json_repair          == 0.63.4
 jsonpatch            == 1.33
 jsonpointer          == 3.1.1
-langchain            == 1.4.0
-langchain-core       == 1.6.3
-langchain-openai     == 1.6.2
+langchain            == 1.4.3
+langchain-core       == 1.6.6
+langchain-openai     == 1.6.7
 langchain-protocol   == 0.0.19
 langgraph            == 1.2.11
 langgraph-checkpoint == 4.2.0
@@ -26,9 +26,9 @@ langsmith            == 0.12.5
 markdown-it-py       == 4.2.0
 mdurl                == 0.1.2
 neo4j                == 6.3.1
-neo4j-graphrag       == 1.19.0
+neo4j-graphrag       == 1.22.0
 numpy                == 2.5.3
-openai               == 3.14.1
+openai               == 3.22.1
 orjson               == 3.12.0
 ormsgpack            == 1.12.2
 packaging            == 26.3
