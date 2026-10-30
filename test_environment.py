@@ -28,6 +28,7 @@ class TestEnvironment(unittest.TestCase):
             self.skipTest("Skipping OpenAI env variable test")
 
         self.env_variable_exists('OPENAI_API_KEY')
+        self.env_variable_exists('OPENAI_BASE_URL')
         TestEnvironment.skip_openai_test = False
 
     def test_neo4j_variables(self):
@@ -44,17 +45,22 @@ class TestEnvironment(unittest.TestCase):
         if TestEnvironment.skip_openai_test:
             self.skipTest("Skipping OpenAI test")
 
-        from openai import OpenAI, AuthenticationError
+        from openai import OpenAI
 
+        # The OpenAI client reads OPENAI_API_KEY and OPENAI_BASE_URL from the
+        # environment, so this call goes to the GraphAcademy workshop LLM proxy.
         llm = OpenAI()
-        
+
         try:
-            models = llm.models.list()
-        except AuthenticationError as e:
-            models = None
+            response = llm.embeddings.create(
+                model="text-embedding-3-small",
+                input="test"
+            )
+        except Exception as e:
+            response = None
         self.assertIsNotNone(
-            models,
-            "OpenAI connection failed. Check the OPENAI_API_KEY key in .env file.")
+            response,
+            "OpenAI connection failed. Check the OPENAI_API_KEY and OPENAI_BASE_URL values in .env file.")
 
     def test_neo4j_connection(self):
 

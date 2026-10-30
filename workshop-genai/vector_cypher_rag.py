@@ -18,7 +18,11 @@ driver = GraphDatabase.driver(
 )
 
 # Create embedder
-embedder = OpenAIEmbeddings(model="text-embedding-3-small")
+embedder = OpenAIEmbeddings(
+    model="text-embedding-3-small",
+    api_key=os.getenv("OPENAI_API_KEY"),
+    base_url=os.getenv("OPENAI_BASE_URL"),
+)
 
 # Define retrieval query
 retrieval_query = """
@@ -36,7 +40,9 @@ retriever = VectorCypherRetriever(
 
 #  Create the LLM
 llm = OpenAILLM(
-    model_name="gpt-5.2"
+    model_name="gpt-5.2",
+    api_key=os.getenv("OPENAI_API_KEY"),
+    base_url=os.getenv("OPENAI_BASE_URL"),
 )
 
 # Create GraphRAG pipeline
