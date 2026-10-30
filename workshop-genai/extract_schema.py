@@ -10,6 +10,8 @@ import asyncio
 schema_extractor = SchemaFromTextExtractor(
     llm = OpenAILLM(
         model_name="gpt-5.2",
+        api_key=os.getenv("OPENAI_API_KEY"),
+        base_url=os.getenv("OPENAI_BASE_URL"),
     ),
     use_structured_output=True,
 )

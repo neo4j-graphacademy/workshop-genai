@@ -20,6 +20,8 @@ neo4j_driver.verify_connectivity()
 # tag::llm[]
 llm = OpenAILLM(
     model_name="gpt-5-nano",
+    api_key=os.getenv("OPENAI_API_KEY"),
+    base_url=os.getenv("OPENAI_BASE_URL"),
     model_params={
         "reasoning_effort": "minimal"
     }
@@ -28,7 +30,9 @@ llm = OpenAILLM(
 
 # tag::embedder[]
 embedder = OpenAIEmbeddings(
-    model="text-embedding-3-small"
+    model="text-embedding-3-small",
+    api_key=os.getenv("OPENAI_API_KEY"),
+    base_url=os.getenv("OPENAI_BASE_URL"),
 )
 # end::embedder[]
 

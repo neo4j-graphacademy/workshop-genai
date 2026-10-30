@@ -17,7 +17,9 @@ driver = GraphDatabase.driver(
 )
 
 llm = OpenAILLM(
-    model_name="gpt-5.2"
+    model_name="gpt-5.2",
+    api_key=os.getenv("OPENAI_API_KEY"),
+    base_url=os.getenv("OPENAI_BASE_URL"),
 )
 
 # tag::examples[]

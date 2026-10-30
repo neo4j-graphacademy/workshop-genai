@@ -27,7 +27,11 @@ driver = GraphDatabase.driver(
 
 # tag::embedder[]
 # Create embedder
-embedder = OpenAIEmbeddings(model="text-embedding-3-small")
+embedder = OpenAIEmbeddings(
+    model="text-embedding-3-small",
+    api_key=os.getenv("OPENAI_API_KEY"),
+    base_url=os.getenv("OPENAI_BASE_URL"),
+)
 # end::embedder[]
 
 # tag::retrieval_query[]
