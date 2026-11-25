@@ -6,6 +6,18 @@ import unittest
 from dotenv import load_dotenv, find_dotenv
 load_dotenv()
 
+def openai_error_hint(error):
+    """A friendly next step for the common workshop LLM proxy failure classes."""
+    status = getattr(error, "status_code", None)
+    if status == 429:
+        return "Your Workshop AI access panel key is out of quota - generate a new key in the panel or ask your facilitator."
+    if status == 401:
+        return "Your OPENAI_API_KEY was rejected - copy a fresh key from the Workshop AI access panel in the course."
+    if status == 404:
+        return "The model or URL was not found on the proxy - check the OPENAI_BASE_URL value in .env and that this model is enabled for your key."
+    return "Check the OPENAI_API_KEY and OPENAI_BASE_URL values in .env file."
+
+
 class TestEnvironment(unittest.TestCase):
 
     skip_env_variable_tests = True
@@ -29,6 +41,14 @@ class TestEnvironment(unittest.TestCase):
 
         self.env_variable_exists('OPENAI_API_KEY')
         self.env_variable_exists('OPENAI_BASE_URL')
+
+        # A personal OpenAI key (sk-) will not work against the proxy and is
+        # what people fall back to when the proxy key fails - fail early.
+        key = os.getenv('OPENAI_API_KEY')
+        self.assertFalse(
+            key.startswith('sk-'),
+            "OPENAI_API_KEY looks like a personal OpenAI key (sk-...). Use the ga-... key from the Workshop AI access panel in the course instead.")
+
         TestEnvironment.skip_openai_test = False
 
     def test_neo4j_variables(self):
@@ -52,15 +72,25 @@ class TestEnvironment(unittest.TestCase):
         llm = OpenAI()
 
         try:
-            response = llm.embeddings.create(
+            llm.embeddings.create(
                 model="text-embedding-3-small",
                 input="test"
             )
         except Exception as e:
-            response = None
-        self.assertIsNotNone(
-            response,
-            "OpenAI connection failed. Check the OPENAI_API_KEY and OPENAI_BASE_URL values in .env file.")
+            self.fail(
+                f"OpenAI embeddings request failed: {type(e).__name__}: {e}\n{openai_error_hint(e)}")
+
+        # The kg builders use gpt-5-nano and text2cypher/agent use gpt-5.2, so
+        # validate the chat completions route at setup too, not just embeddings.
+        try:
+            llm.chat.completions.create(
+                model="gpt-5-nano",
+                messages=[{"role": "user", "content": "Say OK"}],
+                max_completion_tokens=5
+            )
+        except Exception as e:
+            self.fail(
+                f"OpenAI chat completions request failed: {type(e).__name__}: {e}\n{openai_error_hint(e)}")
 
     def test_neo4j_connection(self):
 
